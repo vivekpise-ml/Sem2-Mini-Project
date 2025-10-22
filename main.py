@@ -11,6 +11,7 @@ This script:
 import pandas as pd
 from src import train_models, train_rnn_model
 from src.config import DATA_PATH
+from src.evaluate import evaluate_models
 
 def main():
     print("=" * 80)
@@ -45,6 +46,11 @@ def main():
 
     print("\n🏁 Training complete! All models are saved under the /models directory.")
     print("=" * 80)
+
+    # ... after training
+    print("\n📊 Evaluating models after training...")
+    evaluate_models(df)
+
 
 if __name__ == "__main__":
     main()
