@@ -4,8 +4,9 @@ from sklearn.linear_model import LogisticRegression
 from xgboost import XGBClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import StandardScaler
 import joblib
-from src.features import extract_features
+from src.features import extract_features , extract_all_features
 from src.config import MODEL_DIR
 
 def train_models(df):
@@ -34,12 +35,12 @@ def train_models(df):
     print(f"Feature columns: {list(X.columns)}")
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
+    '''
     # --- Feature scaling ---
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
-
+    '''
     models = {
                "RandomForest": RandomForestClassifier(n_estimators=100, random_state=42),
                "LogisticRegression": LogisticRegression(max_iter=1000),
@@ -50,18 +51,27 @@ def train_models(df):
 
     for name, model in models.items():
         print(f"\u25C6 Training {name} ...")
+
+        # --- Feature scaling Create a new scaler per model to avoid cross-contamination ---
+        scaler = StandardScaler()
+        X_train_scaled = scaler.fit_transform(X_train)
+        X_test_scaled = scaler.transform(X_test)
+
         model.fit(X_train, y_train)
         preds = model.predict(X_test)
         acc = accuracy_score(y_test, preds)
+        
         # Save model and scaler
         model_path = f"{MODEL_DIR}/{name.lower()}_model.pkl"
         scaler_path = f"{MODEL_DIR}/{name.lower()}_scaler.pkl"
+
         joblib.dump(model, model_path)
         joblib.dump(scaler, scaler_path)
         
                                                                                             
         print(f"   ✅ Saved {name} to {model_path}")
         print(f"   ✅ Saved scaler to {scaler_path}")
+        print(f"   \u25C6 Accuracy: {acc:.4f}")
 
         # Store performance
         results[name] = {"accuracy": acc, "model_path": model_path, "scaler_path": scaler_path}
