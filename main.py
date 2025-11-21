@@ -9,7 +9,8 @@ This script:
 """
 
 import pandas as pd
-from src import train_models, train_rnn_model
+#from src import train_models, train_rnn_model
+from src.train_classical import train_models
 from src.config import DATA_PATH
 from src.evaluate import evaluate_models
 
@@ -27,6 +28,8 @@ def main():
         print(f"❌ Dataset not found at {DATA_PATH}. Please check the path in config.py.")
         return
 
+    print("\n📋 Columns in dataset:", df.columns.tolist())
+    print(df.head())
     # --- Phase 2: Train Classical ML Models ---
     print("\n🧠 Training Classical ML Models (RandomForest, LogisticRegression, XGBoost)...")
     model_results = train_models(df)
