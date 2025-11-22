@@ -145,7 +145,8 @@ def train_models(df):
         print(f"   🎯 Accuracy: {acc:.4f}")
         print(f"   💾 Model saved: {model_path}")
 
-        results[name] = {"accuracy": acc}
+        results[name] = {"accuracy": acc,
+                         "model_path" : model_path}
 
     return results
 
