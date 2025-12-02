@@ -1,1 +1,12 @@
-data/kaggle/original-balanced_urls/ 
+data/kaggle/original-balanced_urls/
+models/
+data/kaggle/original-balanced_urls/
+data/kaggle/malicious_phish.csv
+data/kaggle/Phishing_Legitimate_full.csv
+data/phishing-uci/
+*.pkl
+*.pt
+*.csv
+*.arff
+*.png
+
