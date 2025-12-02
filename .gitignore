@@ -10,3 +10,4 @@ data/phishing-uci/
 *.arff
 *.png
 
+models/
