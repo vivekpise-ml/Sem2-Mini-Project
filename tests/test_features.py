@@ -11,7 +11,9 @@ from src.features import extract_all_features
 def test_url_features_basic():
     url = "https://tinyurl.com/abcd"
     feats = extract_all_features(url)
-    assert "entropy" in feats
+    assert "url_entropy" in feats
+    assert "domain_entropy" in feats
+    assert "path_entropy" in feats
     assert "is_shortener" in feats
     assert feats["is_shortener"] == 1
 

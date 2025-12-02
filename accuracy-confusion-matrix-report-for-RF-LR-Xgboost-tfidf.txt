@@ -1,0 +1,127 @@
+(c:\Users\Vivek Pise\Sem2-Mini-Project\.conda) C:\Users\Vivek Pise\Sem2-Mini-Project>python main.py
+================================================================================
+🚀 PHISHING URL DETECTION PROJECT - TRAINING PIPELINE
+================================================================================
+
+📥 Loading dataset...
+✅ Dataset loaded successfully! Total samples: 651191
+
+📋 Columns in dataset: ['url', 'type']
+                                                 url        type
+0                                   br-icloud.com.br    phishing
+1                mp3raid.com/music/krizz_kaliko.html      benign
+2                    bopsecrets.org/rexroth/cr/1.htm      benign
+3  http://www.garage-pirenne.be/index.php?option=...  defacement
+4  http://adventure-nicaragua.net/index.php?optio...  defacement
+
+🧠 Training Classical ML Models (RandomForest, LogisticRegression, XGBoost)...
+
+📘 Detecting dataset structure...
+🔎 Detected URL column → Using RAW URL FEATURE EXTRACTION (Option B)
+
+📘 Detecting label column...
+🔎 Label column detected → type
+🔢 Label classes found: ['benign', 'defacement', 'malware', 'phishing']
+🔁 Label encoding: {'benign': 0, 'defacement': 1, 'malware': 2, 'phishing': 3}
+
+🔍 Extracting features from URLs (Option B)...
+✅ Final feature set shape: (651191, 65)
+TRAINING FEATURE COUNT: 65
+TRAINING COLUMNS: ['domain', 'is_shortener', 'url_length', 'domain_length', 'path_length', 'query_length', 'dot_count', 'slash_count', 'dash_count', 'underscore_count', 'at_count', 'question_count', 'equal_count', 'digit_count', 'letter_count', 'encoded_count', 'special_count', 'digit_ratio', 'letter_ratio', 'special_ratio', 'encoded_ratio', 'url_entropy', 'domain_entropy', 'path_entropy', 'subdomain_count', 'has_ip_domain', 'tld_length', 'path_depth', 'param_count', 'key_value_pairs', 'num_tokens', 'avg_token_len', 'max_token_len', 'kw_secure', 'kw_account', 'kw_update', 'kw_login', 'kw_signin', 'kw_bank', 'kw_verify', 'kw_free', 'kw_bonus', 'kw_gift', 'kw_click', 'kw_download', 'kw_paypal', 'kw_confirm', 'kw_password', 'kw_ebay', 'kw_amazon', 'kw_support', 'kw_alert', 'kw_billing', 'kw_invoice', 'has_php', 'has_html', 'has_https_in_domain', 'double_slash', 'dot_in_path', 'long_subdomain', 'num_forms', 'num_iframes', 'num_scripts', 'num_links', 'has_event_handlers']
+
+◆ Training RandomForest ...
+   🎯 Accuracy: 0.9587
+   💾 Model saved → models/randomforest_model.pkl
+
+◆ Training LogisticRegression ...
+c:\Users\Vivek Pise\Sem2-Mini-Project\.conda\Lib\site-packages\sklearn\linear_model\_logistic.py:1272: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.8. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+   🎯 Accuracy: 0.7649
+   💾 Model saved → models/logisticregression_model.pkl
+
+◆ Training XGBoost ...
+   🎯 Accuracy: 0.9543
+   💾 Model saved → models/xgboost_model.pkl
+
+🧠 Training TF-IDF Model (LogReg / SVM on URL text)...
+DEBUG: Entered TF-IDF training block
+Training improved TF-IDF + SVM pipeline...
+
+Accuracy: 0.9831078182881653
+
+Classification report:
+               precision    recall  f1-score   support
+
+      benign       0.99      0.99      0.99     85616
+  defacement       1.00      1.00      1.00     19062
+     malware       0.99      0.95      0.97      4729
+    phishing       0.95      0.93      0.94     18818
+
+    accuracy                           0.98    128225
+   macro avg       0.98      0.97      0.98    128225
+weighted avg       0.98      0.98      0.98    128225
+
+Confusion matrix:
+ [[84960     1     4   651]
+ [    0 19039     2    21]
+ [   22     0  4507   200]
+ [ 1187    48    30 17553]]
+
+✅ Saved unified TF-IDF pipeline → models\tfidf_pipeline.pkl
+✅ TF-IDF model trained and saved!
+
+📊 Model Performance Summary:
+   RandomForest              Accuracy: 0.9587
+   LogisticRegression        Accuracy: 0.7649
+   XGBoost                   Accuracy: 0.9543
+   TF-IDF Model              Accuracy: 0.9831
+
+🏁 Training complete! All models are saved under the /models directory.
+================================================================================
+
+📊 Evaluating models after training...
+
+📊 Evaluating saved models in: models
+🔎 Detected URL column → Using RAW URL mode (Option B)
+🔎 Label column detected → type
+🔢 Label mapping (case-insensitive): {'benign': 0, 'defacement': 1, 'malware': 2, 'phishing': 3}
+
+🔍 Preparing evaluation feature matrix...
+🌐 Extracting numeric features from URLs (Option B)
+   ✅ X.shape = (651191, 65)
+
+🧠 Evaluating classical model: logisticregression
+   🎯 Accuracy: 0.7648, AUC: 0.9386155628316251
+   📉 Confusion Matrix:
+ [[312051   6165   8005 101882]
+ [   692  89041   4636   2088]
+ [   690   2585  27676   1569]
+ [ 15587   5175   4112  69237]]
+
+🧠 Evaluating classical model: randomforest
+   🎯 Accuracy: 0.9894, AUC: 0.9987296119124703
+   📉 Confusion Matrix:
+ [[425732     12      1   2358]
+ [    34  96323      7     93]
+ [    48     70  31778    624]
+ [  3200    347    141  90423]]
+⚠️ Skipping tfidf (scaler missing).
+
+🧠 Evaluating TF-IDF pipeline model
+   🎯 Accuracy: 0.9945, AUC: 0.9993604811428727
+   📉 Confusion Matrix:
+ [[426987      1      5   1110]
+ [     0  96433      2     22]
+ [    44      0  32023    453]
+ [  1837     48     38  92188]]
+
+🧠 Evaluating classical model: xgboost
+   🎯 Accuracy: 0.9561, AUC: 0.9932419441418621
+   📉 Confusion Matrix:
+ [[419640     55     19   8389]
+ [   243  95624    109    481]
+ [   257    376  30760   1127]
+ [ 15054   2149    298  76610]]
+
+(c:\Users\Vivek Pise\Sem2-Mini-Project\.conda) C:\Users\Vivek Pise\Sem2-Mini-Project>
+(c:\Users\Vivek Pise\Sem2-Mini-Project\.conda) C:\Users\Vivek Pise\Sem2-Mini-Project>

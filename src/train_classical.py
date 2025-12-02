@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -155,6 +156,14 @@ def train_models(df):
     # Convert all to numeric & fill NaNs
     X = X.apply(pd.to_numeric, errors="coerce").fillna(0)
 
+    # ------------------------------------------------------------
+    # Save feature names for evaluation alignment
+    # ------------------------------------------------------------
+    os.makedirs(MODEL_DIR, exist_ok=True)
+    feature_names = list(X.columns)
+    joblib.dump(feature_names, f"{MODEL_DIR}/classical_feature_names.pkl")
+    print("💾 Saved feature names → classical_feature_names.pkl")
+
     # ============================================================
     # TRAIN–TEST SPLIT (STRATIFIED)
     # ============================================================
@@ -162,6 +171,9 @@ def train_models(df):
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=y
     )
+
+    print("TRAINING FEATURE COUNT:", X_train.shape[1])
+    print("TRAINING COLUMNS:", list(X_train.columns))
 
     # ============================================================
     # SCALING
@@ -171,10 +183,17 @@ def train_models(df):
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
+    # Save a shared scaler for evaluation
+    scaler_shared_path = f"{MODEL_DIR}/classical_scaler.pkl"
+    joblib.dump(scaler, scaler_shared_path)
+    print(f"💾 Shared scaler saved → {scaler_shared_path}")
+
     # ============================================================
     # MODELS
     # ============================================================
 
+    # gives accuracy of RF as 0.7770, LR as 0.5555, XGBOOt as 0.8037 originally with 17 features
+    # now added 70 features in URL so as to get more accuracy
     models = {
         "RandomForest": RandomForestClassifier(
             n_estimators=200, class_weight="balanced", random_state=42),
@@ -185,6 +204,33 @@ def train_models(df):
         "XGBoost": XGBClassifier(
             eval_metric="logloss", random_state=42)
     }
+    '''
+    #Increasing accuracy of RF from 0.7770, XGBOOt from 0.8037
+    models = {
+        "RandomForest": RandomForestClassifier(
+                                n_estimators=500,
+                                max_depth=None,
+                                min_samples_split=2,
+                                min_samples_leaf=1,
+                                bootstrap=True,
+                                class_weight="balanced",
+                                random_state=42
+                            ),
+
+        "LogisticRegression": LogisticRegression(
+            max_iter=1000, class_weight="balanced", multi_class="auto", random_state=42),
+
+        "XGBoost": XGBClassifier(
+                            n_estimators=700,
+                            max_depth=9,
+                            learning_rate=0.05,
+                            subsample=0.9,
+                            colsample_bytree=0.9,
+                            eval_metric="logloss",
+                            random_state=42
+                        )
+    }
+    '''
 
     results = {}
 
@@ -213,10 +259,17 @@ def train_models(df):
 # ============================================================
 # ENTRY POINT
 # ============================================================
-
 if __name__ == "__main__":
     from src.config import DATA_PATH
     print("\n🚀 Running standalone training")
+
+    if not os.path.exists(DATA_PATH):
+        print("❌ Dataset not found:", DATA_PATH)
+        raise SystemExit(1)
+
     df = pd.read_csv(DATA_PATH)
     results = train_models(df)
-    print(results)
+
+    print("\n📊 Training complete.")
+    for name, r in results.items():
+        print(f"{name:<20} | Accuracy = {r['accuracy']:.4f}")

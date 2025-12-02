@@ -1,0 +1,93 @@
+(c:\Users\Vivek Pise\Sem2-Mini-Project\.conda) C:\Users\Vivek Pise\Sem2-Mini-Project>python main.py
+================================================================================
+🚀 PHISHING URL DETECTION PROJECT - TRAINING PIPELINE
+================================================================================
+
+📥 Loading dataset...
+✅ Dataset loaded successfully! Total samples: 651191
+
+📋 Columns in dataset: ['url', 'type']
+                                                 url        type
+0                                   br-icloud.com.br    phishing
+1                mp3raid.com/music/krizz_kaliko.html      benign
+2                    bopsecrets.org/rexroth/cr/1.htm      benign
+3  http://www.garage-pirenne.be/index.php?option=...  defacement
+4  http://adventure-nicaragua.net/index.php?optio...  defacement
+
+🧠 Training Classical ML Models (RandomForest, LogisticRegression, XGBoost)...
+
+📘 Detecting dataset structure...
+🔎 Detected URL column → Using RAW URL FEATURE EXTRACTION (Option B)
+
+📘 Detecting label column...
+🔎 Label column detected → type
+🔢 Label classes found: ['benign', 'defacement', 'malware', 'phishing']
+🔁 Label encoding: {'benign': 0, 'defacement': 1, 'malware': 2, 'phishing': 3}
+
+🔍 Extracting features from URLs (Option B)...
+✅ Final feature set shape: (651191, 17)
+
+◆ Training RandomForest ...
+   🎯 Accuracy: 0.7770
+   💾 Model saved → models/randomforest_model.pkl
+
+◆ Training LogisticRegression ...
+c:\Users\Vivek Pise\Sem2-Mini-Project\.conda\Lib\site-packages\sklearn\linear_model\_logistic.py:1272: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.8. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+   🎯 Accuracy: 0.5555
+   💾 Model saved → models/logisticregression_model.pkl
+
+◆ Training XGBoost ...
+   🎯 Accuracy: 0.8037
+   💾 Model saved → models/xgboost_model.pkl
+
+📊 Model Performance Summary:
+   RandomForest              Accuracy: 0.7770
+   LogisticRegression        Accuracy: 0.5555
+   XGBoost                   Accuracy: 0.8037
+
+🏁 Training complete! All models are saved under the /models directory.
+================================================================================
+
+📊 Evaluating models after training...
+
+📊 Evaluating saved models from: models
+🔎 Detected URL column → Using RAW URL FEATURE EXTRACTION (Option B)
+🔎 Label column detected → type
+🔢 Label mapping used for evaluation (lowercase keys): {'benign': 0, 'defacement': 1, 'malware': 2, 'phishing': 3}
+🔍 Preparing evaluation feature matrix...
+🌐 Extracting features from raw URLs (Option B)
+   ✅ Final evaluation feature shape: (651191, 17)
+
+🧠 Evaluating model: logisticregression
+   🎯 Accuracy: 0.5545, ROC-AUC: 0.8251
+   📉 Confusion Matrix:
+[[202177  47621  30930 147375]
+ [ 11861  67415   2050  15131]
+ [  2668   4060  22970   2822]
+ [ 12736   7553   5300  68522]]
+
+🧠 Evaluating model: randomforest
+   🎯 Accuracy: 0.8680, ROC-AUC: 0.9722
+   📉 Confusion Matrix:
+[[367812   6105   1378  52808]
+ [  4518  86791    164   4984]
+ [   521     91  31074    834]
+ [ 11822   2365    379  79545]]
+
+🧠 Evaluating model: xgboost
+   🎯 Accuracy: 0.8083, ROC-AUC: 0.9243
+   📉 Confusion Matrix:
+[[401974  10724    627  14778]
+ [ 24169  66188     59   6041]
+ [  5825   1078  25211    406]
+ [ 56872   3932    342  32965]]
+
+(c:\Users\Vivek Pise\Sem2-Mini-Project\.conda) C:\Users\Vivek Pise\Sem2-Mini-Project>git init
+Reinitialized existing Git repository in C:/Users/Vivek Pise/Sem2-Mini-Project/.git/
+
+(c:\Users\Vivek Pise\Sem2-Mini-Project\.conda) C:\Users\Vivek Pise\Sem2-Mini-Project>git add .
+warning: in the working copy of 'src/config.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/train_classical.py', LF will be replaced by CRLF the next time Git touches it
+
+(c:\Users\Vivek Pise\Sem2-Mini-Project\.conda) C:\Users\Vivek Pise\Sem2-Mini-Project>
